@@ -117,6 +117,12 @@ function showResults() {
   const selectedSubject = subjectSelect.value;
   
   resultsDiv.innerHTML = "";
+
+  // Jangan tampilkan hasil jika pencarian kosong
+  if (nameQuery === "") {
+    return;
+  }
+
   const matches = [];
   const classData = dataByClass[selectedClass];
 
@@ -174,4 +180,3 @@ nameInput.addEventListener("input", showResults);
 
 // Initial setup
 updateSubjects();
-showResults();
