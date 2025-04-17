@@ -4,35 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Jadwal Pemakalah</title>
-  <!-- FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <img src="https://cdn-icons-png.flaticon.com/512/2922/2922510.png" class="illustration" alt="Ilustrasi Mahasiswa" />
   <h1><i class="fas fa-calendar-alt"></i> Jadwal Pemakalah</h1>
+  
+  <select class="class-selector" id="class-select">
+    <option value="PTIQ">Kelas PTIQ</option>
+    <option value="PKU B">Kelas PKU B</option>
+    <option value="PKUP">Kelas PKUP</option>
+  </select>
+
   <div class="selector-container">
-    <select id="class-select">
-      <option value="">Semua Kelas</option>
-      <option value="PTIQ">PTIQ</option>
-      <option value="PKU B">PKU B</option>
-      <option value="PKUP">PKUP</option>
-    </select>
     <select id="subject-select">
       <option value="">Semua Mata Kuliah</option>
-      <option value="Sejarah Peradaban Islam">Sejarah Peradaban Islam</option>
-      <option value="Filsafat Ilmu">Filsafat Ilmu</option>
-      <option value="Pendekatan dalam Kajian Islam">Pendekatan dalam Kajian Islam</option>
-      <option value="Ulumul Qur’an">Ulumul Qur’an</option>
-      <option value="Sejarah dan Pemikiran Tafsir di Indonesia">Sejarah dan Pemikiran Tafsir di Indonesia</option>
-      <option value="Sejarah Pemikiran Islam">Sejarah Pemikiran Islam</option>
     </select>
     <input type="text" id="search-name" placeholder="🔍 Ketik nama..." />
   </div>
+  
   <div class="results" id="results"></div>
 
-  <!-- Custom JS -->
   <script src="script.js"></script>
 </body>
 </html>
