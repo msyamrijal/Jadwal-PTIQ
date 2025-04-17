@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Cek Penugasan Mahasiswa</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  
+</head>
+<body style="font-family: sans-serif; padding: 20px;">
+
+  <script src="app.js"></script>
+  <h2>Cek Penugasan Mahasiswa</h2>
+
+  <label>Masukkan Nama (boleh sebagian):</label><br>
+  <input type="text" id="studentName" placeholder="Contoh: imran" style="padding: 5px; width: 300px;"><br><br>
+
+  <label>Filter Mata Kuliah:</label><br>
+  <select id="courseFilter" style="padding: 5px; width: 300px;">
+    <option value="">Semua Mata Kuliah</option>
+  </select><br><br>
+
+  <label>Filter Tanggal:</label><br>
+  <select id="dateFilter" style="padding: 5px; width: 300px;">
+    <option value="">Semua Tanggal</option>
+  </select><br><br>
+
+  <button onclick="checkAssignments()" style="padding: 8px 16px;">Cek</button>
+
+  <div id="results" style="margin-top: 30px;"></div>
+</body>
+</html>
