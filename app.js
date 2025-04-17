@@ -87,7 +87,7 @@
       "22 Mei 2025", "29 Mei 2025", "05 Juni 2025", "12 Juni 2025", "19 Juni 2025"
     ];
 
-    function populateFilters() {
+     function populateFilters() {
       const courseSelect = document.getElementById("courseFilter");
       const dateSelect = document.getElementById("dateFilter");
 
@@ -138,4 +138,3 @@
     }
 
     window.onload = populateFilters;
-  
