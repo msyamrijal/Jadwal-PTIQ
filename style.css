@@ -161,6 +161,20 @@ select:focus, input:focus {
   line-height: 1.4;
 }
 
+.card-group {
+  margin: 0.5rem 0;
+  padding: 0.75rem;
+  background: rgba(99, 102, 241, 0.05);
+  border-radius: 8px;
+}
+
+.highlight {
+  background: rgba(99, 102, 241, 0.15);
+  color: var(--primary);
+  padding: 0.15rem 0.3rem;
+  border-radius: 4px;
+}
+
 .highlight {
   background: rgba(99, 102, 241, 0.1);
   color: var(--primary);
