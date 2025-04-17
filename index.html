@@ -2,30 +2,46 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Cek Penugasan Mahasiswa</title>
-  <link rel="stylesheet" type="text/css" href="style.css">
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Penugasan Mahasiswa</title>
+<link rel="stylesheet" type="text/css" href="style.css">
 </head>
-<body style="font-family: sans-serif; padding: 20px;">
+<body>
+<script src="app.js"></script>
+  <header>
+    <h1>Penugasan Mahasiswa</h1>
+    <p>Cari penugasan berdasarkan nama, mata kuliah, atau tanggal</p>
+  </header>
 
-  <script src="app.js"></script>
-  <h2>Cek Penugasan Mahasiswa</h2>
+  <main>
+    <div class="form-group">
+      <div class="form-control">
+        <label for="studentName">Nama Mahasiswa</label>
+        <input type="text" id="studentName" placeholder="Contoh: imran">
+      </div>
+      <div class="form-control">
+        <label for="courseFilter">Mata Kuliah</label>
+        <select id="courseFilter">
+          <option value="">Semua Mata Kuliah</option>
+        </select>
+      </div>
+      <div class="form-control">
+        <label for="dateFilter">Tanggal</label>
+        <select id="dateFilter">
+          <option value="">Semua Tanggal</option>
+        </select>
+      </div>
+    </div>
 
-  <label>Masukkan Nama (boleh sebagian):</label><br>
-  <input type="text" id="studentName" placeholder="Contoh: imran" style="padding: 5px; width: 300px;"><br><br>
+    <div class="form-submit">
+      <button onclick="checkAssignments()">Cek</button>
+    </div>
 
-  <label>Filter Mata Kuliah:</label><br>
-  <select id="courseFilter" style="padding: 5px; width: 300px;">
-    <option value="">Semua Mata Kuliah</option>
-  </select><br><br>
+    <div id="results"></div>
+  </main>
 
-  <label>Filter Tanggal:</label><br>
-  <select id="dateFilter" style="padding: 5px; width: 300px;">
-    <option value="">Semua Tanggal</option>
-  </select><br><br>
-
-  <button onclick="checkAssignments()" style="padding: 8px 16px;">Cek</button>
-
-  <div id="results" style="margin-top: 30px;"></div>
+  <footer>
+    &copy; 2025 Jadwal PTIQ | Dibuat dengan ❤️ 
+  </footer>
 </body>
 </html>
