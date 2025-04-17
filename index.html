@@ -1,47 +1,194 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jadwal Pemakalah</title>
-<link rel="stylesheet" type="text/css" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cek Penugasan Mahasiswa</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 2rem;
+      background: linear-gradient(135deg, #e6f2ff, #ffffff);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 2rem;
+    }
+    .selector-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+    input, select {
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      width: 250px;
+      max-width: 100%;
+      background: #fdfdfd;
+    }
+    .results {
+      width: 100%;
+      max-width: 800px;
+    }
+    .result-card {
+      background: #fff;
+      margin-bottom: 1rem;
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeIn 0.5s ease forwards;
+    }
+    .result-card h3 {
+      margin: 0 0 0.5rem;
+      color: #2980b9;
+    }
+    .result-card p {
+      margin: 0.2rem 0;
+      color: #333;
+    }
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
 </head>
 <body>
-<script src="app.js"></script>
-  <header>
-    <h1>Jadwal Pemakalah</h1>
-    <p>Cari penugasan berdasarkan nama, mata kuliah, atau tanggal</p>
-  </header>
+  <h1>Cek Penugasan Mahasiswa</h1>
+  <div class="selector-container">
+    <input type="text" id="search-name" placeholder="Cari nama mahasiswa..." />
+    <select id="filter-subject">
+      <option value="">Semua Mata Kuliah</option>
+      <option value="Sejarah Peradaban Islam">Sejarah Peradaban Islam</option>
+      <option value="Filsafat Ilmu">Filsafat Ilmu</option>
+      <option value="Pendekatan dalam Kajian Islam">Pendekatan dalam Kajian Islam</option>
+      <option value="Ulumul Qur’an">Ulumul Qur’an</option>
+      <option value="Sejarah dan Pemikiran Tafsir di Indonesia">Sejarah dan Pemikiran Tafsir di Indonesia</option>
+      <option value="Sejarah Pemikiran Islam">Sejarah Pemikiran Islam</option>
+    </select>
+  </div>
+  <div class="results" id="results"></div>
 
-  <main>
-    <div class="form-group">
-      <div class="form-control">
-        <label for="studentName">Nama Mahasiswa</label>
-        <input type="text" id="studentName" placeholder="Contoh: imran">
-      </div>
-      <div class="form-control">
-        <label for="courseFilter">Mata Kuliah</label>
-        <select id="courseFilter">
-          <option value="">Semua Mata Kuliah</option>
-        </select>
-      </div>
-      <div class="form-control">
-        <label for="dateFilter">Tanggal</label>
-        <select id="dateFilter">
-          <option value="">Semua Tanggal</option>
-        </select>
-      </div>
-    </div>
+  <script>
+    const data = {
+      "Sejarah Peradaban Islam": {
+        "21 April 2025": ["Noviyatul Badriyah", "Ibnatul Mardiah"],
+        "28 April 2025": ["Nailul Khoiril Marom", "M. Syamsur Rijal"],
+        "05 Mei 2025": ["Nurul Huda", "M. Iskhak Nawawi"],
+        "12 Mei 2025": ["Nur Kholisah", "Nurul Jannah"],
+        "19 Mei 2025": ["Saepul", "M. Imdadur Rachman"],
+        "26 Mei 2025": ["Yolan Hardika Pratama", "Muh. Ikbal Amsah"],
+        "02 Juni 2025": ["Farhani Azkia", "Putri Salsabila Azkya"],
+        "09 Juni 2025": ["Salman Alfarezi", "M. Subulul Hikam"],
+        "16 Juni 2025": ["M. Imran", "Zaky Zimmatillah Zulfikar"],
+        "23 Juni 2025": ["M. Imdadur Rachman", "Muh. Ikbal Amsah"]
+      },
+      "Filsafat Ilmu": {
+        "21 April 2025": ["M. Subulul Hikam", "Zaeni Anwar"],
+        "28 April 2025": ["Nurul Jannah", "Farhani Azkia"],
+        "05 Mei 2025": ["M. Iskhak Nawawi", "Zaky Zimmatillah Zulfikar"],
+        "12 Mei 2025": ["Nailul Khoiril Marom", "Yolan Hardika Pratama"],
+        "19 Mei 2025": ["Siti Muliana", "Noviyatul Badriyah"],
+        "26 Mei 2025": ["M. Syamsur Rijal", "Nur Ardhiansyah KH"],
+        "02 Juni 2025": ["Muh. Ikbal Amsah", "Zulfi Fadhlurrahman"],
+        "09 Juni 2025": ["Saepul", "Rusdi"]
+      },
+      "Pendekatan dalam Kajian Islam": {
+        "21 April 2025": ["Nurul Huda", "Rusdi"],
+        "28 April 2025": ["Saepul", "Salman Alfarezi"],
+        "05 Mei 2025": ["Yolan Hardika Pratama", "Zaeni Anwar"],
+        "12 Mei 2025": ["Zaky Zimmatillah Zulfikar", "Zulfi Fadhlurrahman"],
+        "19 Mei 2025": ["Farhani Azkia", "Hilya Hasna Nabila"],
+        "26 Mei 2025": ["Ibnatul Mardiah", "Noviyatul Badriyah"],
+        "02 Juni 2025": ["Nur Kholisah", "Nurul Jannah"],
+        "09 Juni 2025": ["Putri Salsabila Azkya", "Siti Muliana"]
+      },
+      "Ulumul Qur’an": {
+        "24 April 2025": ["M. Imran", "Putri Salsabila Azkya"],
+        "01 Mei 2025": ["M. Imdadur Rachman", "Rusdi"],
+        "08 Mei 2025": ["Zaky Zimmatillah Zulfikar", "Nur Ardhiansyah KH"],
+        "15 Mei 2025": ["M. Syamsur Rijal", "Farhani Azkia"],
+        "22 Mei 2025": ["Saepul", "M. Subulul Hikam"],
+        "29 Mei 2025": ["Zaeni Anwar", "Muh. Ikbal Amsah"],
+        "05 Juni 2025": ["Siti Muliana", "Nurul Huda"],
+        "12 Juni 2025": ["Yolan Hardika Pratama"],
+        "19 Juni 2025": ["Nailul Khoiril Marom"]
+      },
+      "Sejarah dan Pemikiran Tafsir di Indonesia": {
+        "24 April 2025": ["Farhani Azkia", "Putri Salsabila Azkya"],
+        "28 April 2025": ["Muhamad Imdadur Rachman", "Zaky Zimmatillah Zulfikar"],
+        "01 Mei 2025": ["Zaeni Anwar", "Zulfi Fadhlurrahman"],
+        "05 Mei 2025": ["Nurul Huda", "Muchamad Subulul Hikam"],
+        "08 Mei 2025": ["Yolan Hardika Pratama", "Rusdi"],
+        "12 Mei 2025": ["Muhammad Syamsur Rijal", "Nur Ardhiansyah Khalillurahman Ibrahim"],
+        "15 Mei 2025": ["Mukhamad Iskhak Nawawi", "Nailul Khoiril Marom"],
+        "19 Mei 2025": ["Saepul", "Salman Alfarezi"],
+        "22 Mei 2025": ["Hilya Hasna Nabila", "Nur Kholisah"]
+      },
+      "Sejarah Pemikiran Islam": {
+        "24 April 2025": ["M. Syamsur Rijal", "Nur Kholisah", "Nurul Huda", "Zaky Zimmatillah Zulfikar"],
+        "28 April 2025": ["M. Subulul Hikam", "Zaeni Anwar", "M. Imdadur Rachman", "M. Imran"],
+        "01 Mei 2025": ["Nailul Khoiril Marom", "Saepul", "Zulfi Fadhlurrahman", "Salman Alfarezi"],
+        "05 Mei 2025": ["Yolan Hardika Pratama", "Rusdi", "Hilya Hasna Nabila", "Muh. Ikbal Amsah"],
+        "08 Mei 2025": ["Nur Ardhiansyah KH", "Siti Muliana", "Nurul Jannah", "Noviyatul Badriyah"],
+        "12 Mei 2025": ["Putri Salsabila Azkya", "Farhani Azkia", "Ibnatul Mardiah", "M. Iskhak Nawawi"],
+        "15 Mei 2025": ["M. Syamsur Rijal", "Nur Kholisah", "Nurul Huda", "Zaky Zimmatillah Zulfikar"],
+        "19 Mei 2025": ["M. Subulul Hikam", "Zaeni Anwar", "M. Imdadur Rachman", "M. Imran"],
+        "22 Mei 2025": ["Nailul Khoiril Marom", "Saepul", "Zulfi Fadhlurrahman", "Salman Alfarezi"]
+      }
+    };
 
-    <div class="form-submit">
-      <button onclick="checkAssignments()">Cek</button>
-    </div>
+    const searchInput = document.getElementById("search-name");
+    const subjectFilter = document.getElementById("filter-subject");
+    const resultsDiv = document.getElementById("results");
 
-    <div id="results"></div>
-  </main>
+    searchInput.addEventListener("input", showResults);
+    subjectFilter.addEventListener("change", showResults);
 
-  <footer>
-    &copy; 2025 Jadwal PTIQ | Dibuat dengan ❤️ 
-  </footer>
+    function showResults() {
+      const query = searchInput.value.toLowerCase();
+      const selectedSubject = subjectFilter.value;
+      resultsDiv.innerHTML = "";
+
+      const found = [];
+      for (const subject in data) {
+        if (selectedSubject && subject !== selectedSubject) continue;
+        for (const date in data[subject]) {
+          for (const name of data[subject][date]) {
+            if (name.toLowerCase().includes(query)) {
+              found.push({ subject, date, name });
+            }
+          }
+        }
+      }
+
+      found.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      for (const entry of found) {
+        const card = document.createElement("div");
+        card.className = "result-card";
+        card.innerHTML = `
+          <h3>${entry.date}</h3>
+          <p><strong>Mata Kuliah:</strong> ${entry.subject}</p>
+          <p><strong>Nama:</strong> ${entry.name}</p>
+        `;
+        resultsDiv.appendChild(card);
+      }
+    }
+  </script>
 </body>
 </html>
