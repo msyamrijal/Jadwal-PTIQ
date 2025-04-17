@@ -66,7 +66,91 @@ const dataByClass = {
       "2025-06-19": ["Nailul Khoiril Marom", "Saepul", "Zulfi Fadhlurrahman", "Salman Alfarezi"]
     }
   },
-  "PKU B": {},
+  
+  "PKU B": {
+  "Tarjih": {
+    "2025-04-19": ["Triyanti Nurhikmah", "Muhammad Syamsur Rijal", "Nailul Khoiril Marom", "Zaky Zimmatillah Zulfikar", "Zaeni Anwar", "Nurul Huda", "Muhamad Imdadur Rachman"],
+    "2025-04-26": ["Nurfaizah Jamaluddin", "Rusdi", "Mukhamad Iskhak Nawawi", "Muhammad Imran", "Salman Alfarezi Muchamad", "Zulfi Fadhlurrahman"],
+    "2025-05-03": ["Saepul", "Subulul Hikam", "Umiatu Rohmah", "Yolan Hardika Pratama", "Muh. Ikbal Amsah", "Nur Ardhiansyah Khalillurahman Ibrahim"]
+  },
+  "Epistemologi Islam": {
+    "2025-04-23": ["Umiatu Rohmah", "Muchamad Subulul Hikam"],
+    "2025-04-30": ["Yolan Hardika Pratama"],
+    "2025-05-07": ["Triyanti Nurhikmah"],
+    "2025-05-14": ["Salman Alfarezi"],
+    "2025-05-21": ["Zaeni Anwar"],
+    "2025-05-28": ["Zaky Zimmatillah Zulfikar"],
+    "2025-06-04": ["Nurul Huda"],
+    "2025-06-11": ["Saepul"],
+    "2025-06-18": ["Nurfaizah Jamaluddin"],
+    "2025-06-25": ["Mukhamad Iskhak Nawawi"]
+  },
+  "Bahasa Arab": {
+    "2025-04-22": ["Muhammad Imran", "Muh. Ikbal Amsah"],
+    "2025-04-29": ["Nailul Khoiril Marom", "Muhamad Imdadur Rachman"],
+    "2025-05-06": ["Zulfi Fadhlurrahman", "Muhammad Syamsur Rijal"],
+    "2025-05-13": ["Triyanti Nurhikmah", "Rusdi"],
+    "2025-05-20": ["Yolan Hardika Pratama", "Mukhamad Iskhak Nawawi"],
+    "2025-05-27": ["Nurul Huda", "Muchamad Subulul Hikam"],
+    "2025-06-03": ["Nur Ardiansyah K. I."]
+  },
+  "Perbandingan Madzhab": {
+    "2025-04-22": ["Nur Ardhiansyah Khalillurahman Ibrahim", "Nurfaizah Jamaluddin", "Zaky Zimmatillah Zulfikar", "Zulfi Fadhlurrahman"],
+    "2025-04-29": ["Nurul Huda", "Rusdi"],
+    "2025-05-06": ["Saepul", "Salman Al Farezi"],
+    "2025-05-13": ["Triyanti Nurkhikmah", "Umiatu Rohmah"]
+  },
+  "Kajian Lintas Agama": {
+    "2025-04-23": ["Salman Alfarezi", "Nurul Huda"],
+    "2025-04-30": ["Nurfaizah Jamaluddin", "Muhammad Syamsur Rijal"],
+    "2025-05-07": ["Triyanti Nurhikmah", "Muhamad Imdadur Rachman"],
+    "2025-05-14": ["Nailul Khoiril Marom", "Saepul"],
+    "2025-05-21": ["Muchamad Subulul Hikam", "Umiatu Rohmah"],
+    "2025-05-28": ["Yolan Hardika Pratama", "Muh. Ikbal Amsah"],
+    "2025-06-04": ["Rusdi", "Mukhamad Iskhak Nawawi"],
+    "2025-06-11": ["Zaeni Anwar", "Zulfi Fadhlurrahman"]
+  },
+  "Tafsir Gender dan Sufisme": {
+    "2025-04-18": ["Nailul Khoiril Marom", "Umiatu Rohmah"],
+    "2025-04-25": ["Muchamad Subulul Hikam", "Rusdi"],
+    "2025-05-02": ["Muhammad Syamsur Rijal", "Muhamad Imdadur Rachman"],
+    "2025-05-09": ["Salman Alfarezi", "Muh. Ikbal Amsah"],
+    "2025-05-16": ["Yolan Hardika Pratama"],
+    "2025-05-23": ["Triyanti Nurhikmah"],
+    "2025-05-30": ["Saepul"],
+    "2025-06-06": ["Muhammad Imran"],
+    "2025-06-13": ["Nur Ardhiansyah Khalillurahman Ibrahim"]
+  },
+  "Bahasa Inggris": {
+    "2025-04-18": ["M. Iskhak Nawawi", "Nailul Khoiril Marom", "Nurul Huda", "Ahmad Mahrus"],
+    "2025-04-25": ["Ince", "Triyanti Nurhikmah", "Adam Azizi", "Zulfi Fadhlurrahman"],
+    "2025-05-02": ["Nurfaizah Jamaluddin", "Abdul Jabar", "Moh. Fadlurrahman"],
+    "2025-05-09": ["Umiatu Rohmah", "M. Iqbal", "Muhammad Imran"],
+    "2025-05-16": ["Azhar", "Hilal", "Salman Alfarezi"],
+    "2025-05-23": ["Darmawangsa", "Lukman", "Saepul"],
+    "2025-05-30": ["Muh. Ikbal Amsah", "Imamull Burhan", "Iqbal Salafuddin"],
+    "2025-06-06": ["Nur Ardiansyah K. I.", "Ahmad Sayyid", "M. Imdadur Rachman"],
+    "2025-06-13": ["Dannu", "Agung Setiabudi", "Yolan Hardika Pratama"],
+    "2025-06-20": ["Al Fahrizal", "Zaky Zimmatillah Zulfikar", "Muchamad Subulul Hikam"],
+    "2025-06-27": ["Fasrul", "Zaeni Anwar", "Muhammad Syamsur Rijal"]
+  },
+  "Dakwah dan Komunikasi Islam": {
+    "2025-04-18": ["Muchamad Subulul Hikam (B)"],
+    "2025-04-25": ["Muh. Ikbal Amsah (B)"],
+    "2025-05-02": ["Muhamad Imdadur Rachman (B)"],
+    "2025-05-09": ["Muhammad Imran (B)"],
+    "2025-05-16": ["Muhammad Syamsur Rijal (B)"],
+    "2025-05-23": ["Mukhamad Iskhak Nawawi (B)"],
+    "2025-05-30": ["Nailul Khairil Marom (B)"],
+    "2025-06-06": ["Nur Ardhiansyah Khalillurahman Ibrahim (B)"],
+    "2025-06-13": ["Triyanti Nurhikmah (B)", "Nurfaizah Jamaluddin (B)"],
+    "2025-06-20": ["Umiatu Rohmah (B)", "Nurul Huda (B)"],
+    "2025-06-27": ["Yolan Hardika Pratama (B)", "Rusdi (B)"],
+    "2025-07-04": ["Zaeni Anwar (B)", "Saepul (B)"],
+    "2025-07-11": ["Zaky Zimmatillah Zulfikar (B)", "Salman Alfarezi (B)", "Zulfi Fadlurrahman (B)"]
+  }
+},
+  
   "PKUP": {}
 };
 
@@ -111,63 +195,100 @@ function highlightText(text, query) {
 }
 
 // Show filtered results
+// Modifikasi fungsi showResults
 function showResults() {
   const nameQuery = nameInput.value.toLowerCase();
   const selectedClass = classSelect.value;
   const selectedSubject = subjectSelect.value;
   
   resultsDiv.innerHTML = "";
-
-  // Jangan tampilkan hasil jika pencarian kosong
-  if (nameQuery === "") {
-    return;
-  }
+  if (nameQuery === "") return;
 
   const matches = [];
-  const classData = dataByClass[selectedClass];
+  const classesToSearch = selectedClass === 'all' ? Object.keys(dataByClass) : [selectedClass];
 
-  for (const subject in classData) {
-    if (selectedSubject && subject !== selectedSubject) continue;
+  classesToSearch.forEach(currentClass => {
+    const classData = dataByClass[currentClass] || {};
     
-    for (const date in classData[subject]) {
-      const names = classData[subject][date].filter(name => 
-        name.toLowerCase().includes(nameQuery)
-      );
-
-      if (names.length > 0) {
-        matches.push({
-          class: selectedClass,
-          subject,
-          date,
-          names,
-          query: nameQuery
-        });
+    for (const subject in classData) {
+      if (selectedSubject && subject !== selectedSubject) continue;
+      
+      for (const date in classData[subject]) {
+        const group = classData[subject][date];
+        const hasMatch = group.some(name => name.toLowerCase().includes(nameQuery));
+        
+        if (hasMatch) {
+          matches.push({
+            class: currentClass,
+            subject,
+            date,
+            group,
+            query: nameQuery
+          });
+        }
       }
     }
-  }
+  });
 
-  // Sort by date
+  // Sorting dan rendering
   matches.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-  // Render results
+  
   matches.forEach(match => {
     const card = document.createElement("div");
     card.className = "result-card";
     
-    const highlightedNames = match.names.map(name => 
-      highlightText(name, match.query)
-    ).join(", ");
+    const highlightedGroup = match.group.map(name => {
+      const lowerName = name.toLowerCase();
+      return lowerName.includes(match.query)
+        ? `<span class="highlight">${name}</span>`
+        : name;
+    }).join(', ');
 
     card.innerHTML = `
-      <p><i class="fa-solid fa-calendar-day"></i> <strong>${formatTanggalIndo(match.date)}</strong></p>
-      <p><i class="fa-solid fa-users"></i> ${highlightedNames}</p>
-      <p><i class="fa-solid fa-book"></i> ${match.subject}</p>
-      <p><i class="fa-solid fa-chalkboard-user"></i> Kelas: ${match.class}</p>
+      <div class="card-meta">
+        <i class="fa-solid fa-calendar-day"></i>
+        <span class="card-date">${formatTanggalIndo(match.date)}</span>
+      </div>
+      <div class="card-meta">
+        <i class="fa-solid fa-book"></i>
+        <span>${match.subject}</span>
+      </div>
+      <div class="card-group">
+        <i class="fa-solid fa-users"></i>
+        ${highlightedGroup}
+      </div>
+      <div class="card-meta">
+        <i class="fa-solid fa-chalkboard-user"></i>
+        <span>Kelas: ${match.class}</span>
+      </div>
     `;
     
     resultsDiv.appendChild(card);
   });
 }
+
+
+// Update fungsi updateSubjects untuk handle semua kelas
+function updateSubjects() {
+  const selectedClass = classSelect.value;
+  let subjects = [];
+  
+  if (selectedClass === 'all') {
+    const allSubjects = new Set();
+    Object.values(dataByClass).forEach(classData => {
+      Object.keys(classData).forEach(subject => allSubjects.add(subject));
+    });
+    subjects = Array.from(allSubjects);
+  } else {
+    subjects = Object.keys(dataByClass[selectedClass] || {});
+  }
+
+  subjectSelect.innerHTML = '<option value="">📖 Semua Mata Kuliah</option>';
+  subjects.forEach(subject => {
+    subjectSelect.innerHTML += `<option value="${subject}">${subject}</option>`;
+  });
+}
+
 
 // Event Listeners
 classSelect.addEventListener("change", () => {
@@ -180,3 +301,4 @@ nameInput.addEventListener("input", showResults);
 
 // Initial setup
 updateSubjects();
+showResults();
