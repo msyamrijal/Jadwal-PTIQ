@@ -80,17 +80,24 @@
 
     const dates = [
       "10 Februari 2025", "17 Februari 2025", "24 Februari 2025", "14 April 2025",
-      "21 April 2025", "28 April 2025", "05 Mei 2025", "12 Mei 2025",
-      "19 Mei 2025", "26 Mei 2025", "02 Juni 2025", "09 Juni 2025",
-      "16 Juni 2025", "23 Juni 2025",
-      "24 April 2025", "01 Mei 2025", "08 Mei 2025", "15 Mei 2025",
-      "22 Mei 2025", "29 Mei 2025", "05 Juni 2025", "12 Juni 2025", "19 Juni 2025"
+      "21 April 2025", "24 April 2025", "28 April 2025", "01 Mei 2025", "05 Mei 2025",
+      "08 Mei 2025", "12 Mei 2025", "15 Mei 2025", "19 Mei 2025", "22 Mei 2025",
+      "26 Mei 2025", "29 Mei 2025", "02 Juni 2025", "05 Juni 2025", "09 Juni 2025",
+      "12 Juni 2025", "16 Juni 2025", "19 Juni 2025", "23 Juni 2025"
     ];
 
-     function populateFilters() {
+    function parseDate(dateStr) {
+      const [day, monthName, year] = dateStr.split(" ");
+      const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+      const month = months.indexOf(monthName);
+      return new Date(parseInt(year), month, parseInt(day));
+    }
+
+    function populateFilters() {
       const courseSelect = document.getElementById("courseFilter");
       const dateSelect = document.getElementById("dateFilter");
 
+      // Isi mata kuliah
       for (const course of Object.keys(data)) {
         const option = document.createElement("option");
         option.value = course;
@@ -98,6 +105,7 @@
         courseSelect.appendChild(option);
       }
 
+      // Isi tanggal
       dates.forEach(date => {
         const option = document.createElement("option");
         option.value = date;
@@ -110,7 +118,8 @@
       const name = document.getElementById("studentName").value.trim().toLowerCase();
       const selectedCourse = document.getElementById("courseFilter").value;
       const selectedDate = document.getElementById("dateFilter").value;
-      const results = [];
+
+      let results = [];
 
       for (const [course, assignments] of Object.entries(data)) {
         if (selectedCourse !== "" && course !== selectedCourse) continue;
@@ -121,16 +130,21 @@
 
           group.forEach(person => {
             if (person.toLowerCase().includes(name)) {
-              results.push(`${course} - ${tanggal} - <strong>${person}</strong>`);
+              results.push({
+                text: `${course} - ${tanggal} - <strong>${person}</strong>`,
+                date: parseDate(tanggal)
+              });
             }
           });
         });
       }
 
+      results.sort((a, b) => a.date - b.date);
+
       const resultDiv = document.getElementById("results");
       if (results.length > 0) {
         resultDiv.innerHTML = "<h3>Hasil Penugasan:</h3><ul>" +
-          results.map(r => `<li>${r}</li>`).join("") +
+          results.map(r => `<li>${r.text}</li>`).join("") +
           "</ul>";
       } else {
         resultDiv.innerHTML = "<p>Tidak ada penugasan ditemukan.</p>";
