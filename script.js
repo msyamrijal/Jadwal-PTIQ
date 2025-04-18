@@ -308,7 +308,7 @@ function updateSubjects() {
   }
 
   // Reset dan isi ulang options
-  subjectSelect.innerHTML = '<option value="">📖 Semua Mata Kuliah</option>';
+  subjectSelect.innerHTML = '<option value="">Semua Mata Kuliah</option>';
   const frag = document.createDocumentFragment();
   subjects.forEach(s => {
     const opt = document.createElement('option');
