@@ -201,144 +201,197 @@ const dataByClass = {
 
 };
 
-// DOM Elements
-const classSelect = document.getElementById("class-select");
-const subjectSelect = document.getElementById("subject-select");
-const nameInput = document.getElementById("search-name");
-const resultsDiv = document.getElementById("results");
+// Debounce helper
+function debounce(fn, delay) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+}
 
 // Format tanggal ke bahasa Indonesia
 function formatTanggalIndo(dateStr) {
-  const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+  const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
   const months = [
-    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    'Januari','Februari','Maret','April','Mei','Juni',
+    'Juli','Agustus','September','Oktober','November','Desember'
   ];
-
-  const date = new Date(dateStr);
-  const dayName = days[date.getDay()];
-  const day = String(date.getDate()).padStart(2, '0');
-  const monthName = months[date.getMonth()];
-  const year = date.getFullYear();
-  return `${dayName}, ${day} ${monthName} ${year}`;
+  const d = new Date(dateStr);
+  const dayName = days[d.getDay()];
+  const day = String(d.getDate()).padStart(2,'0');
+  const month = months[d.getMonth()];
+  const year = d.getFullYear();
+  return `${dayName}, ${day} ${month} ${year}`;
 }
 
-// Highlight matching text
-function highlightText(text, query) {
-  if (!query) return text;
-  const regex = new RegExp(`(${query})`, "gi");
-  return text.replace(regex, "<strong>$1</strong>");
+// Generate array event untuk FullCalendar
+function generateEventList(data) {
+  const events = [];
+  for (const className in data) {
+    for (const subject in data[className]) {
+      for (const date in data[className][subject]) {
+        const names = data[className][subject][date];
+        const title = `${names.slice(0,2).join(', ')}${names.length>2? ', ...':''}`;
+        events.push({
+          title,
+          date,
+          detail: `Kelas: ${className}<br>Mata Kuliah: ${subject}<br>Nama: ${names.join(', ')}`
+        });
+      }
+    }
+  }
+  return events;
 }
 
-// Show filtered results (sudah diedit untuk menyembunyikan tanggal yang sudah lewat)
+// Ambil elemen global
+const classSelect   = document.getElementById("class-select");
+const subjectSelect = document.getElementById("subject-select");
+const nameInput     = document.getElementById("search-name");
+const resultsDiv    = document.getElementById("results");
+
+// Akan diisi pada DOMContentLoaded
+let calendarEl, printContainer;
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Inisialisasi elemen kalender & tombol cetak
+  calendarEl      = document.getElementById('calendar');
+  printContainer  = document.querySelector('.print-button-container');
+
+  // Inisialisasi FullCalendar
+  const calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+    locale: 'id',
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: ''
+    },
+    events: generateEventList(dataByClass),
+    eventClick: info => {
+      // tampilkan popup dengan detail
+      const detail = info.event.extendedProps.detail;
+      document.getElementById('popup-content').innerHTML = `<p>${detail}</p>`;
+      document.getElementById('overlay').style.display = 'block';
+      document.getElementById('popup').style.display   = 'block';
+    }
+  });
+  calendar.render();
+
+  // Pasang listener dengan debounce pada input nama
+  classSelect.addEventListener('change', () => { updateSubjects(); showResults(); });
+  subjectSelect.addEventListener('change', showResults);
+  nameInput.addEventListener('input', debounce(showResults, 300));
+
+  // Setup awal
+  updateSubjects();
+  showResults();
+});
+
+function closePopup() {
+  document.getElementById('overlay').style.display = 'none';
+  document.getElementById('popup').style.display   = 'none';
+}
+
+// Update daftar mata kuliah di dropdown
+function updateSubjects() {
+  const sel = classSelect.value;
+  let subjects = [];
+
+  if (sel === 'all') {
+    const all = new Set();
+    Object.values(dataByClass)
+      .forEach(cd => Object.keys(cd).forEach(s => all.add(s)));
+    subjects = Array.from(all);
+  } else {
+    subjects = Object.keys(dataByClass[sel] || {});
+  }
+
+  // Reset dan isi ulang options
+  subjectSelect.innerHTML = '<option value="">📖 Semua Mata Kuliah</option>';
+  const frag = document.createDocumentFragment();
+  subjects.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value       = s;
+    opt.textContent = s;
+    frag.appendChild(opt);
+  });
+  subjectSelect.appendChild(frag);
+}
+
+// Tampilkan / filter hasil, dan sembunyikan kalender jika ada query
 function showResults() {
-  const nameQuery = nameInput.value.toLowerCase();
-  const selectedClass = classSelect.value;
-  const selectedSubject = subjectSelect.value;
-  
-  resultsDiv.innerHTML = "";
+  const nameQuery = nameInput.value.trim().toLowerCase();
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0); // Normalisasi waktu hari ini
+  // Hide / show kalender & tombol cetak
+  if (nameQuery) {
+    calendarEl.style.display      = 'none';
+    printContainer && (printContainer.style.display = 'none');
+  } else {
+    calendarEl.style.display      = '';
+    printContainer && (printContainer.style.display = '');
+  }
 
-  const matches = [];
-  const classesToSearch = selectedClass === 'all' ? Object.keys(dataByClass) : [selectedClass];
+  resultsDiv.innerHTML = '';
+  const today = new Date(); today.setHours(0,0,0,0);
+  const selClass   = classSelect.value;
+  const selSubj    = subjectSelect.value;
+  const classes    = selClass === 'all' ? Object.keys(dataByClass) : [selClass];
+  const matches    = [];
 
-  classesToSearch.forEach(currentClass => {
-    const classData = dataByClass[currentClass] || {};
-    
-    for (const subject in classData) {
-      if (selectedSubject && subject !== selectedSubject) continue;
-      
-      for (const date in classData[subject]) {
-        const group = classData[subject][date];
-        const hasMatch = nameQuery ? 
-          group.some(name => name.toLowerCase().includes(nameQuery)) :
-          true;
-
-        const eventDate = new Date(date);
-        eventDate.setHours(0, 0, 0, 0);
-
-        if (hasMatch && eventDate >= today) {
-          matches.push({
-            class: currentClass,
-            subject,
-            date,
-            group,
-            query: nameQuery
-          });
+  // Kumpulkan match
+  classes.forEach(cl => {
+    const subs = dataByClass[cl] || {};
+    for (const subject in subs) {
+      if (selSubj && subject !== selSubj) continue;
+      for (const date in subs[subject]) {
+        const eventDate = new Date(date); eventDate.setHours(0,0,0,0);
+        if (eventDate < today) continue;
+        const group = subs[subject][date];
+        const hasMatch = nameQuery
+          ? group.some(n => n.toLowerCase().includes(nameQuery))
+          : true;
+        if (hasMatch) {
+          matches.push({ class: cl, subject, date, group, query: nameQuery });
         }
       }
     }
   });
 
-  matches.sort((a, b) => new Date(a.date) - new Date(b.date));
-  
-  matches.forEach(match => {
-    const card = document.createElement("div");
-    card.className = "result-card";
-    
-    const highlightedGroup = match.group.map(name => {
-      const lowerName = name.toLowerCase();
-      return lowerName.includes(match.query)
-        ? `<span class="highlight">${name}</span>`
-        : name;
-    }).join(', ');
+  // Sort by date
+  matches.sort((a,b) => new Date(a.date) - new Date(b.date));
 
-    card.innerHTML = `
-      <div class="card-meta">
-        <i class="fa-solid fa-calendar-day"></i>
-        <span class="card-date">${formatTanggalIndo(match.date)}</span>
-      </div>
-      <div class="card-meta">
-        <i class="fa-solid fa-book"></i>
-        <span>${match.subject}</span>
-      </div>
-      <div class="card-group">
-        <i class="fa-solid fa-users"></i>
-        ${highlightedGroup}
-      </div>
-      <div class="card-meta">
-        <i class="fa-solid fa-chalkboard-user"></i>
-        <span>Kelas: ${match.class}</span>
-      </div>
-    `;
-    
+  // Render kartu
+  matches.forEach(m => {
+    const card = document.createElement('div');
+    card.className = 'result-card';
+
+    // Tanggal
+    const meta1 = document.createElement('div'); meta1.className = 'card-meta';
+    meta1.innerHTML = `<i class="fa-solid fa-calendar-day"></i>`;
+    const dateEl = document.createElement('span');
+    dateEl.className = 'card-date';
+    dateEl.textContent = formatTanggalIndo(m.date);
+    meta1.appendChild(dateEl);
+
+    // Mata Kuliah
+    const meta2 = document.createElement('div'); meta2.className = 'card-meta';
+    meta2.innerHTML = `<i class="fa-solid fa-book"></i><span>${m.subject}</span>`;
+
+    // Group
+    const groupDiv = document.createElement('div'); groupDiv.className = 'card-group';
+    groupDiv.innerHTML = `<i class="fa-solid fa-users"></i>` +
+      m.group.map(name =>
+        name.toLowerCase().includes(m.query)
+          ? `<span class="highlight">${name}</span>`
+          : name
+      ).join(', ');
+
+    // Kelas
+    const meta3 = document.createElement('div'); meta3.className = 'card-meta';
+    meta3.innerHTML = `<i class="fa-solid fa-chalkboard-user"></i><span>Kelas: ${m.class}</span>`;
+
+    [meta1, meta2, groupDiv, meta3].forEach(el => card.appendChild(el));
     resultsDiv.appendChild(card);
   });
 }
-
-// Update daftar mata kuliah
-function updateSubjects() {
-  const selectedClass = classSelect.value;
-  let subjects = [];
-  
-  if (selectedClass === 'all') {
-    const allSubjects = new Set();
-    Object.values(dataByClass).forEach(classData => {
-      Object.keys(classData).forEach(subject => allSubjects.add(subject));
-    });
-    subjects = Array.from(allSubjects);
-  } else {
-    subjects = Object.keys(dataByClass[selectedClass] || {});
-  }
-
-  subjectSelect.innerHTML = '<option value="">📖 Semua Mata Kuliah</option>';
-  subjects.forEach(subject => {
-    subjectSelect.innerHTML += `<option value="${subject}">${subject}</option>`;
-  });
-}
-
-// Event Listeners
-classSelect.addEventListener("change", () => {
-  updateSubjects();
-  showResults();
-});
-
-subjectSelect.addEventListener("change", showResults);
-nameInput.addEventListener("input", showResults);
-
-// Initial setup
-updateSubjects();
-showResults();
-
