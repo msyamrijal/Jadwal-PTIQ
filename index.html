@@ -12,28 +12,51 @@
   <div class="container">
     <div class="hero">
       <img src="https://cdn-icons-png.flaticon.com/512/2232/2232688.png" class="illustration" alt="Study Illustration">
-      <h1>Jadwal Pemakalah</h1>
-      
+      <h1 class="title">Jadwal Pemakalah</h1>
+
       <div class="controls">
-       <select class="class-selector" id="class-select">
-  <option value="all">🎓 Semua Kelas</option>
-  <option value="PTIQ">🎓 Kelas PTIQ H</option>
-  <option value="PKU B">📚 Kelas PKU B</option>
-  <option value="PKUP">✏️ Kelas PKUP</option>
-</select>
-        
-        <div class="selector-container">
-          <select id="subject-select">
-            <option value="">📖 Semua Mata Kuliah</option>
+        <div class="select-wrapper">
+          <label for="class-select" class="sr-only">Pilih Kelas</label>
+          <i class="fa-solid fa-graduation-cap"></i>
+          <select id="class-select" aria-label="Pilih Kelas">
+            <option value="all">Semua Kelas</option>
+            <option value="PTIQ">Kelas PTIQ H</option>
+            <option value="PKU B">Kelas PKU B</option>
+            <option value="PKUP">Kelas PKUP</option>
           </select>
-          <input type="text" id="search-name" placeholder="🔍 Tulis nama....">
+        </div>
+
+        <div class="selector-container">
+          <div class="select-wrapper">
+            <label for="subject-select" class="sr-only">Pilih Mata Kuliah</label>
+            <i class="fa-solid fa-book"></i>
+            <select id="subject-select" aria-label="Pilih Mata Kuliah">
+              <option value="">Semua Mata Kuliah</option>
+            </select>
+          </div>
+
+          <div class="select-wrapper">
+            <label for="search-name" class="sr-only">Cari Nama</label>
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="search-name" placeholder="Tulis nama..." aria-label="Cari Nama">
+          </div>
         </div>
       </div>
+
+      <div id="calendar"></div>
     </div>
 
     <div class="results" id="results"></div>
+
+    <!-- Popup untuk detail event -->
+    <div id="overlay" class="overlay" onclick="closePopup()"></div>
+    <div id="popup" class="popup">
+      <button class="close-btn" onclick="closePopup()">&times;</button>
+      <div id="popup-content"></div>
+    </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
