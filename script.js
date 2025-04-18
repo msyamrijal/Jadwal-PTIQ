@@ -195,15 +195,14 @@ function highlightText(text, query) {
 }
 
 // Show filtered results
-// Modifikasi fungsi showResults
 function showResults() {
   const nameQuery = nameInput.value.toLowerCase();
   const selectedClass = classSelect.value;
   const selectedSubject = subjectSelect.value;
   
   resultsDiv.innerHTML = "";
-  if (nameQuery === "") return;
 
+  // Hapus pengecekan pencarian kosong
   const matches = [];
   const classesToSearch = selectedClass === 'all' ? Object.keys(dataByClass) : [selectedClass];
 
@@ -215,8 +214,10 @@ function showResults() {
       
       for (const date in classData[subject]) {
         const group = classData[subject][date];
-        const hasMatch = group.some(name => name.toLowerCase().includes(nameQuery));
-        
+        const hasMatch = nameQuery ? 
+          group.some(name => name.toLowerCase().includes(nameQuery)) :
+          true; // Selalu true jika pencarian kosong
+
         if (hasMatch) {
           matches.push({
             class: currentClass,
