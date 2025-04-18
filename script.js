@@ -207,17 +207,6 @@ const subjectSelect = document.getElementById("subject-select");
 const nameInput = document.getElementById("search-name");
 const resultsDiv = document.getElementById("results");
 
-// Update subject options based on selected class
-function updateSubjects() {
-  const selectedClass = classSelect.value;
-  const subjects = Object.keys(dataByClass[selectedClass]);
-  
-  subjectSelect.innerHTML = '<option value="">Semua Mata Kuliah</option>';
-  subjects.forEach(subject => {
-    subjectSelect.innerHTML += `<option value="${subject}">${subject}</option>`;
-  });
-}
-
 // Format tanggal ke bahasa Indonesia
 function formatTanggalIndo(dateStr) {
   const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
@@ -241,7 +230,7 @@ function highlightText(text, query) {
   return text.replace(regex, "<strong>$1</strong>");
 }
 
-// Show filtered results
+// Show filtered results (sudah diedit untuk menyembunyikan tanggal yang sudah lewat)
 function showResults() {
   const nameQuery = nameInput.value.toLowerCase();
   const selectedClass = classSelect.value;
@@ -249,7 +238,9 @@ function showResults() {
   
   resultsDiv.innerHTML = "";
 
-  // Hapus pengecekan pencarian kosong
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Normalisasi waktu hari ini
+
   const matches = [];
   const classesToSearch = selectedClass === 'all' ? Object.keys(dataByClass) : [selectedClass];
 
@@ -263,9 +254,12 @@ function showResults() {
         const group = classData[subject][date];
         const hasMatch = nameQuery ? 
           group.some(name => name.toLowerCase().includes(nameQuery)) :
-          true; // Selalu true jika pencarian kosong
+          true;
 
-        if (hasMatch) {
+        const eventDate = new Date(date);
+        eventDate.setHours(0, 0, 0, 0);
+
+        if (hasMatch && eventDate >= today) {
           matches.push({
             class: currentClass,
             subject,
@@ -278,7 +272,6 @@ function showResults() {
     }
   });
 
-  // Sorting dan rendering
   matches.sort((a, b) => new Date(a.date) - new Date(b.date));
   
   matches.forEach(match => {
@@ -315,8 +308,7 @@ function showResults() {
   });
 }
 
-
-// Update fungsi updateSubjects untuk handle semua kelas
+// Update daftar mata kuliah
 function updateSubjects() {
   const selectedClass = classSelect.value;
   let subjects = [];
@@ -337,7 +329,6 @@ function updateSubjects() {
   });
 }
 
-
 // Event Listeners
 classSelect.addEventListener("change", () => {
   updateSubjects();
@@ -350,3 +341,4 @@ nameInput.addEventListener("input", showResults);
 // Initial setup
 updateSubjects();
 showResults();
+
