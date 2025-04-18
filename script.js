@@ -151,7 +151,54 @@ const dataByClass = {
   }
 },
   
-  "PKUP": {}
+  "PKUP": {
+  "Tafsir Prespektif Gender dan Sufisme": {
+    "2025-04-25": ["Noviatul Badriyah", "Nurul Jannah"],
+    "2025-05-02": ["Siti Muliana", "Ibnatul Mardhiyah"],
+    "2025-05-09": ["Nur Khalisah", "Farhani Azkiya"],
+    "2025-05-16": ["Hilya Hasna Nabila", "Putri Salsabila Azkiya"]
+  },
+  "Bahasa Arab": {
+    "2025-04-18": ["Hilya Hasna Nabila", "Nur Khalisah"],
+    "2025-04-22": ["Putri Salsabila Azkiya", "Farhani Azkiya"],
+    "2025-04-25": ["Siti Muliana", "Ibnatul Mardhiyah"],
+    "2025-04-29": ["Noviatul Badriyah", "Nurul Jannah"]
+  },
+  "Perbandingan Mazhab": {
+    "2025-02-12": ["Noviatul Badriyah", "Nurul Jannah"],
+    "2025-02-19": ["Nur Khalisah", "Farhani Azkiya"],
+    "2025-02-26": ["Hilya Hasna Nabila", "Ibnatul Mardhiyah"],
+    "2025-04-16": ["Putri Salsabila Azkiya", "Siti Muliana"],
+    "2025-04-23": ["Noviatul Badriyah", "Nurul Jannah"],
+    "2025-04-30": ["Nur Khalisah", "Farhani Azkiya"],
+    "2025-05-07": ["Hilya Hasna Nabila", "Ibnatul Mardhiyah"],
+    "2025-05-14": ["Putri Salsabila Azkiya", "Siti Muliana"],
+    "2025-05-21": ["Noviatul Badriyah", "Nurul Jannah"],
+    "2025-05-28": ["Nur Khalisah", "Farhani Azkiya"],
+    "2025-06-04": ["Hilya Hasna Nabila", "Ibnatul Mardhiyah"]
+  },
+  "Tafsir dan Fiqh Gender": {
+    "2025-04-25": ["Siti Muliana"],
+    "2025-05-02": ["Noviatul Badriyah"],
+    "2025-05-09": ["Hilya Hasna Nabila"],
+    "2025-05-16": ["Nurul Jannah"],
+    "2025-05-23": ["Farhani Azkiya"],
+    "2025-05-30": ["Putri Salsabila Azkiya"],
+    "2025-06-06": ["Nur Khalisah"],
+    "2025-06-13": ["Ibnatul Mardhiyyah"]
+  },
+  "Konsep dan Teori Gender": {
+    "2025-02-14": ["Farhani Azkiya"],
+    "2025-02-21": ["Hilya Hasna Nabila"],
+    "2025-02-28": ["Ibnatul Mardhiyyah"],
+    "2025-04-18": ["Noviatul Badriyah"],
+    "2025-04-25": ["Nur Khalisah"],
+    "2025-05-02": ["Nurul Jannah"],
+    "2025-05-09": ["Putri Salsabila Azkiya"],
+    "2025-05-16": ["Siti Muliana"]
+  }
+}
+
 };
 
 // DOM Elements
