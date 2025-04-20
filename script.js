@@ -23,7 +23,7 @@ const dataByClass = {
       "2025-06-09": ["Saepul", "Rusdi"]
     },
     "Pendekatan dalam Kajian Islam": {
-      "2025-04-28": ["Saepul", "Salman Alfarezi"], ["Nurul Huda", "Rusdi"],
+      "2025-04-28": ["Saepul", "Salman Alfarezi", "Nurul Huda", "Rusdi"],
       "2025-05-05": ["Yolan Hardika Pratama", "Zaeni Anwar"],
       "2025-05-12": ["Zaky Zimmatillah Zulfikar", "Zulfi Fadhlurrahman"],
       "2025-05-19": ["Farhani Azkia", "Hilya Hasna Nabila"],
