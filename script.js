@@ -100,25 +100,27 @@ const dataByClass = {
     "2025-05-13": ["Triyanti Nurkhikmah", "Umiatu Rohmah"]
   },
   "Kajian Lintas Agama": {
-    "2025-04-23": ["Salman Alfarezi", "Nurul Huda"],
-    "2025-04-30": ["Nurfaizah Jamaluddin", "Muhammad Syamsur Rijal"],
-    "2025-05-07": ["Triyanti Nurhikmah", "Muhamad Imdadur Rachman"],
-    "2025-05-14": ["Nailul Khoiril Marom", "Saepul"],
-    "2025-05-21": ["Muchamad Subulul Hikam", "Umiatu Rohmah"],
-    "2025-05-28": ["Yolan Hardika Pratama", "Muh. Ikbal Amsah"],
-    "2025-06-04": ["Rusdi", "Mukhamad Iskhak Nawawi"],
-    "2025-06-11": ["Zaeni Anwar", "Zulfi Fadhlurrahman"]
+    "2025-04-30": ["Salman Alfarezi", "Nurul Huda"],
+    "2025-05-07": ["Nurfaizah Jamaluddin", "Muhammad Syamsur Rijal"],
+    "2025-05-14": ["Triyanti Nurhikmah", "Muhamad Imdadur Rachman"],
+    "2025-05-21": ["Nailul Khoiril Marom", "Saepul"],
+    "2025-05-28": ["Muchamad Subulul Hikam", "Umiatu Rohmah"],
+    "2025-06-04": ["Yolan Hardika Pratama", "Muh. Ikbal Amsah"],
+    "2025-06-11": ["Rusdi", "Mukhamad Iskhak Nawawi"],
+    "2025-06-18": ["Zaeni Anwar", "Zulfi Fadhlurrahman"]
+
   },
   "Tafsir Gender dan Sufisme": {
-    "2025-04-18": ["Nailul Khoiril Marom", "Umiatu Rohmah"],
-    "2025-04-25": ["Muchamad Subulul Hikam", "Rusdi"],
-    "2025-05-02": ["Muhammad Syamsur Rijal", "Muhamad Imdadur Rachman"],
-    "2025-05-09": ["Salman Alfarezi", "Muh. Ikbal Amsah"],
-    "2025-05-16": ["Yolan Hardika Pratama"],
-    "2025-05-23": ["Triyanti Nurhikmah"],
-    "2025-05-30": ["Saepul"],
-    "2025-06-06": ["Muhammad Imran"],
-    "2025-06-13": ["Nur Ardhiansyah Khalillurahman Ibrahim"]
+    "2025-04-25": ["Nailul Khoiril Marom", "Umiatu Rohmah"],
+    "2025-05-02": ["Muchamad Subulul Hikam", "Rusdi"],
+    "2025-05-09": ["Muhammad Syamsur Rijal", "Muhamad Imdadur Rachman"],
+    "2025-05-16": ["Salman Alfarezi", "Muh. Ikbal Amsah"],
+    "2025-05-23": ["Yolan Hardika Pratama"],
+    "2025-05-30": ["Triyanti Nurhikmah"],
+    "2025-06-06": ["Saepul"],
+    "2025-06-13": ["Muhammad Imran"],
+    "2025-06-20": ["Nur Ardhiansyah Khalillurahman Ibrahim"]
+
   },
   "Bahasa Inggris": {
     "2025-04-18": ["M. Iskhak Nawawi", "Nailul Khoiril Marom", "Nurul Huda", "Ahmad Mahrus"],
