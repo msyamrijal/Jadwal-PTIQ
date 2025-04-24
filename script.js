@@ -432,5 +432,3 @@ function showResults() {
     resultsDiv.appendChild(card);
   });
 }
-
-
