@@ -200,6 +200,7 @@ const dataByClass = {
 
 };
 
+
 // Debounce helper
 function debounce(fn, delay) {
   let timer;
@@ -285,6 +286,43 @@ document.addEventListener('DOMContentLoaded', () => {
   // Setup awal
   updateSubjects();
   showResults();
+
+  // Fitur popup "Add to Home Screen" di mobile
+  if (window.matchMedia('(max-width: 768px)').matches) {
+    setTimeout(function() {
+      const popup = document.getElementById('add-to-home-popup');
+      popup.style.display = 'block';
+    }, 1000);  // Tunda 1 detik setelah halaman dimuat
+
+    // Close popup ketika tombol close diklik
+    document.getElementById('close-popup').addEventListener('click', function() {
+      document.getElementById('add-to-home-popup').style.display = 'none';
+    });
+
+    // Tombol Tambah ke Layar Utama
+    document.getElementById('add-to-home').addEventListener('click', function() {
+      if (window.matchMedia('(display-mode: standalone)').matches) {
+        alert("Situs sudah di layar utama!");
+      } else {
+        // Menambahkan aplikasi ke layar utama (untuk PWA)
+        if (window.deferredPrompt) {
+          window.deferredPrompt.prompt();  // Memicu prompt "Add to Home Screen"
+          window.deferredPrompt.userChoice
+            .then(function(choiceResult) {
+              window.deferredPrompt = null;
+              console.log(choiceResult.outcome);
+            });
+        }
+      }
+    });
+
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      console.log("App bisa dipasang!");
+    });
+  }
 });
 
 function closePopup() {
