@@ -78,6 +78,41 @@ body {
   margin-bottom: 2rem;
 }
 
+/* Google Drive Dropdown */
+.drive-dropdown-container {
+  margin-bottom: 1.5rem;
+}
+
+.drive-dropdown-container label {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text);
+  margin-right: 0.5rem;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.drive-dropdown {
+  background-color: var(--card-bg);
+  color: var(--text);
+  border: 2px solid #e2e8f0;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  width: 100%;
+  max-width: 300px;
+}
+
+.drive-dropdown:hover,
+.drive-dropdown:focus {
+  background-color: #eef2ff;
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.2);
+}
+
 .select-wrapper {
   position: relative;
 }
