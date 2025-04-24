@@ -318,6 +318,74 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
+
+
+    let deferredPrompt;
+
+// Tangkap event sebelum browser menampilkan install prompt
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();          // cegah prompt otomatis
+  deferredPrompt = e;          // simpan untuk nanti
+  showInstallPopup();
+});
+
+// Utility untuk deteksi iOS
+function isIos() {
+  return /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
+}
+function isInStandaloneMode() {
+  return window.matchMedia('(display-mode: standalone)').matches
+      || window.navigator.standalone === true;
+}
+
+// Tampilkan popup, baik untuk Android maupun iOS
+function showInstallPopup() {
+  const popup = document.getElementById('add-to-home-popup');
+  // iOS: tidak ada deferredPrompt → tampilkan instruksi
+  if (isIos() && !isInStandaloneMode()) {
+    popup.querySelector('p').textContent =
+      'Untuk menambahkan ke Layar Utama: tekan tombol “Bagikan” lalu pilih “Tambah ke Layar Utama”.';
+    popup.querySelector('#add-to-home').style.display = 'none';
+  } else if (deferredPrompt) {
+    popup.querySelector('p').textContent =
+      'Tambahkan situs ini ke layar depan untuk akses cepat.';
+    popup.querySelector('#add-to-home').style.display = 'inline-block';
+  } else {
+    return; // tidak didukung
+  }
+  popup.style.display = 'flex';
+}
+
+// Event tombol Close
+document.addEventListener('click', (e) => {
+  if (e.target.id === 'close-popup') {
+    document.getElementById('add-to-home-popup').style.display = 'none';
+  }
+});
+
+// Event tombol “Tambah ke Layar Utama”
+document.addEventListener('click', async (e) => {
+  if (e.target.id === 'add-to-home' && deferredPrompt) {
+    document.getElementById('add-to-home-popup').style.display = 'none';
+    deferredPrompt.prompt();   // tampilkan native prompt
+    const choice = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    console.log('User choice:', choice.outcome);
+  }
+});
+
+// (Opsional) Tampilkan manual jika sebeluminstallprompt tidak pernah dipicu
+// Misalnya setelah 3 detik pada layar kecil
+document.addEventListener('DOMContentLoaded', () => {
+  if ((isIos() && !isInStandaloneMode()) ||
+      (window.matchMedia('(max-width: 768px)').matches && !deferredPrompt)) {
+    setTimeout(showInstallPopup, 3000);
+  }
+});
+
+
+
+    
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
