@@ -1,3 +1,13 @@
+// service-worker-registration.js
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => console.log('ServiceWorker registered'))
+      .catch(err => console.log('ServiceWorker registration failed:', err));
+  });
+}
+
+// app.js
 const dataByClass = {
   "PTIQ": {
     "Sejarah Peradaban Islam": {
@@ -202,303 +212,259 @@ const dataByClass = {
 
 };
 
+// Global Elements
+const elements = {
+  classSelect: document.getElementById("class-select"),
+  subjectSelect: document.getElementById("subject-select"),
+  nameInput: document.getElementById("search-name"),
+  resultsDiv: document.getElementById("results"),
+  calendarEl: document.getElementById('calendar'),
+  printContainer: document.querySelector('.print-button-container'),
+  driveDropdown: document.getElementById("driveDropdown"),
+  popup: {
+    overlay: document.getElementById('overlay'),
+    content: document.getElementById('popup-content'),
+    container: document.getElementById('popup')
+  },
+  pwaPopup: document.getElementById('add-to-home-popup')
+};
 
-// Debounce helper
-function debounce(fn, delay) {
-  let timer;
-  return (...args) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => fn(...args), delay);
-  };
-}
+// Utility Functions
+const utils = {
+  debounce: (fn, delay) => {
+    let timer;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => fn(...args), delay);
+    };
+  },
 
-// Format tanggal ke bahasa Indonesia
-function formatTanggalIndo(dateStr) {
-  const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-  const months = [
-    'Januari','Februari','Maret','April','Mei','Juni',
-    'Juli','Agustus','September','Oktober','November','Desember'
-  ];
-  const d = new Date(dateStr);
-  const dayName = days[d.getDay()];
-  const day = String(d.getDate()).padStart(2,'0');
-  const month = months[d.getMonth()];
-  const year = d.getFullYear();
-  return `${dayName}, ${day} ${month} ${year}`;
-}
+  formatDate: (dateStr) => {
+    const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+    const months = ['Januari','Februari','Maret','April','Mei','Juni',
+      'Juli','Agustus','September','Oktober','November','Desember'];
+    const d = new Date(dateStr);
+    return `${days[d.getDay()]}, ${d.getDate().toString().padStart(2,'0')} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  },
 
-// Generate array event untuk FullCalendar
-function generateEventList(data) {
-  const events = [];
-  for (const className in data) {
-    for (const subject in data[className]) {
-      for (const date in data[className][subject]) {
-        const names = data[className][subject][date];
-        const title = `${names.slice(0,2).join(', ')}${names.length>2? ', ...':''}`;
-        events.push({
-          title,
-          date,
-          detail: `Kelas: ${className}<br>Mata Kuliah: ${subject}<br>Nama: ${names.join(', ')}`
+  detectIOS: () => /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase()),
+  
+  isStandalone: () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone
+};
+
+// Calendar Manager
+const calendarManager = {
+  init: () => {
+    return new FullCalendar.Calendar(elements.calendarEl, {
+      initialView: 'dayGridMonth',
+      locale: 'id',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: ''
+      },
+      events: calendarManager.generateEvents(),
+      eventClick: info => {
+        elements.popup.content.innerHTML = `<p>${info.event.extendedProps.detail}</p>`;
+        elements.popup.overlay.style.display = 'block';
+        elements.popup.container.style.display = 'block';
+      }
+    });
+  },
+
+  generateEvents: () => {
+    return Object.entries(dataByClass).reduce((events, [className, subjects]) => {
+      Object.entries(subjects).forEach(([subject, dates]) => {
+        Object.entries(dates).forEach(([date, names]) => {
+          events.push({
+            title: `${names.slice(0,2).join(', ')}${names.length>2 ? ', ...' : ''}`,
+            date,
+            extendedProps: {
+              detail: `Kelas: ${className}<br>Mata Kuliah: ${subject}<br>Nama: ${names.join(', ')}`
+            }
+          });
         });
-      }
-    }
+      });
+      return events;
+    }, []);
   }
-  return events;
-}
+};
 
-// Ambil elemen global
-const classSelect   = document.getElementById("class-select");
-const subjectSelect = document.getElementById("subject-select");
-const nameInput     = document.getElementById("search-name");
-const resultsDiv    = document.getElementById("results");
-
-// Akan diisi pada DOMContentLoaded
-let calendarEl, printContainer;
-
-document.addEventListener('DOMContentLoaded', () => {
-  // Inisialisasi elemen kalender & tombol cetak
-  calendarEl      = document.getElementById('calendar');
-  printContainer  = document.querySelector('.print-button-container');
-
-  // Inisialisasi FullCalendar
-  const calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'dayGridMonth',
-    locale: 'id',
-    headerToolbar: {
-      left: 'prev,next today',
-      center: 'title',
-      right: ''
-    },
-    events: generateEventList(dataByClass),
-    eventClick: info => {
-      // tampilkan popup dengan detail
-      const detail = info.event.extendedProps.detail;
-      document.getElementById('popup-content').innerHTML = `<p>${detail}</p>`;
-      document.getElementById('overlay').style.display = 'block';
-      document.getElementById('popup').style.display   = 'block';
-    }
-  });
-  calendar.render();
-
-  // Pasang listener dengan debounce pada input nama
-  classSelect.addEventListener('change', () => { updateSubjects(); showResults(); });
-  subjectSelect.addEventListener('change', showResults);
-  nameInput.addEventListener('input', debounce(showResults, 300));
-
-  // Setup awal
-  updateSubjects();
-  showResults();
-
-  // Fitur popup "Add to Home Screen" di mobile
-  if (window.matchMedia('(max-width: 768px)').matches) {
-    setTimeout(function() {
-      const popup = document.getElementById('add-to-home-popup');
-      popup.style.display = 'block';
-    }, 1000);  // Tunda 1 detik setelah halaman dimuat
-
-    // Close popup ketika tombol close diklik
-    document.getElementById('close-popup').addEventListener('click', function() {
-      document.getElementById('add-to-home-popup').style.display = 'none';
-    });
-
-    // Tombol Tambah ke Layar Utama
-    document.getElementById('add-to-home').addEventListener('click', function() {
-      if (window.matchMedia('(display-mode: standalone)').matches) {
-        alert("Situs sudah di layar utama!");
-      } else {
-        // Menambahkan aplikasi ke layar utama (untuk PWA)
-        if (window.deferredPrompt) {
-          window.deferredPrompt.prompt();  // Memicu prompt "Add to Home Screen"
-          window.deferredPrompt.userChoice
-            .then(function(choiceResult) {
-              window.deferredPrompt = null;
-              console.log(choiceResult.outcome);
-            });
-        }
-      }
-    });
-
-
-
-    let deferredPrompt;
-
-// Tangkap event sebelum browser menampilkan install prompt
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();          // cegah prompt otomatis
-  deferredPrompt = e;          // simpan untuk nanti
-  showInstallPopup();
-});
-
-// Utility untuk deteksi iOS
-function isIos() {
-  return /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
-}
-function isInStandaloneMode() {
-  return window.matchMedia('(display-mode: standalone)').matches
-      || window.navigator.standalone === true;
-}
-
-// Tampilkan popup, baik untuk Android maupun iOS
-function showInstallPopup() {
-  const popup = document.getElementById('add-to-home-popup');
-  // iOS: tidak ada deferredPrompt → tampilkan instruksi
-  if (isIos() && !isInStandaloneMode()) {
-    popup.querySelector('p').textContent =
-      'Untuk menambahkan ke Layar Utama: tekan tombol “Bagikan” lalu pilih “Tambah ke Layar Utama”.';
-    popup.querySelector('#add-to-home').style.display = 'none';
-  } else if (deferredPrompt) {
-    popup.querySelector('p').textContent =
-      'Tambahkan situs ini ke layar depan untuk akses cepat.';
-    popup.querySelector('#add-to-home').style.display = 'inline-block';
-  } else {
-    return; // tidak didukung
-  }
-  popup.style.display = 'flex';
-}
-
-// Event tombol Close
-document.addEventListener('click', (e) => {
-  if (e.target.id === 'close-popup') {
-    document.getElementById('add-to-home-popup').style.display = 'none';
-  }
-});
-
-// Event tombol “Tambah ke Layar Utama”
-document.addEventListener('click', async (e) => {
-  if (e.target.id === 'add-to-home' && deferredPrompt) {
-    document.getElementById('add-to-home-popup').style.display = 'none';
-    deferredPrompt.prompt();   // tampilkan native prompt
-    const choice = await deferredPrompt.userChoice;
-    deferredPrompt = null;
-    console.log('User choice:', choice.outcome);
-  }
-});
-
-// (Opsional) Tampilkan manual jika sebeluminstallprompt tidak pernah dipicu
-// Misalnya setelah 3 detik pada layar kecil
-document.addEventListener('DOMContentLoaded', () => {
-  if ((isIos() && !isInStandaloneMode()) ||
-      (window.matchMedia('(max-width: 768px)').matches && !deferredPrompt)) {
-    setTimeout(showInstallPopup, 3000);
-  }
-});
-
-
-
+// Data Manager
+const dataManager = {
+  getFilteredData: (selectedClass, selectedSubject, nameQuery) => {
+    const today = new Date().setHours(0,0,0,0);
+    const classes = selectedClass === 'all' ? Object.keys(dataByClass) : [selectedClass];
     
+    return classes.flatMap(className => {
+      const subjects = dataByClass[className] || {};
+      return Object.entries(subjects).flatMap(([subject, dates]) => {
+        if(selectedSubject && subject !== selectedSubject) return [];
+        return Object.entries(dates).flatMap(([date, names]) => {
+          const eventDate = new Date(date).setHours(0,0,0,0);
+          if(eventDate < today) return [];
+          const hasMatch = nameQuery ? 
+            names.some(name => name.toLowerCase().includes(nameQuery)) : true;
+          return hasMatch ? [{ className, subject, date, names }] : [];
+        });
+      });
+    }).sort((a,b) => new Date(a.date) - new Date(b.date));
+  },
+
+  renderResults: (results, query) => {
+    elements.resultsDiv.innerHTML = '';
+    
+    results.forEach(({ className, subject, date, names }) => {
+      const card = document.createElement('div');
+      card.className = 'result-card';
+      
+      card.innerHTML = `
+        <div class="card-meta">
+          <i class="fa-solid fa-calendar-day"></i>
+          <span class="card-date">${utils.formatDate(date)}</span>
+        </div>
+        <div class="card-meta">
+          <i class="fa-solid fa-book"></i>
+          <span>${subject}</span>
+        </div>
+        <div class="card-group">
+          <i class="fa-solid fa-users"></i>
+          ${names.map(name => 
+            name.toLowerCase().includes(query) ? 
+            `<span class="highlight">${name}</span>` : name
+          ).join(', ')}
+        </div>
+        <div class="card-meta">
+          <i class="fa-solid fa-chalkboard-user"></i>
+          <span>Kelas: ${className}</span>
+        </div>
+      `;
+      
+      elements.resultsDiv.appendChild(card);
+    });
+  }
+};
+
+// UI Controller
+const uiController = {
+  init: () => {
+    // Event Listeners
+    elements.classSelect.addEventListener('change', uiController.handleClassChange);
+    elements.subjectSelect.addEventListener('change', uiController.handleSearch);
+    elements.nameInput.addEventListener('input', utils.debounce(uiController.handleSearch, 300));
+    elements.driveDropdown.addEventListener("change", uiController.handleDriveSelect);
+    document.getElementById('close-popup').addEventListener('click', uiController.closePopup);
+    document.getElementById('add-to-home').addEventListener('click', uiController.handlePWAInstall);
+
+    // Load Saved Preferences
+    const savedClass = localStorage.getItem('selectedClass');
+    if(savedClass) elements.classSelect.value = savedClass;
+    
+    // Initialize Calendar
+    const calendar = calendarManager.init();
+    calendar.render();
+
+    // Initialize PWA
+    uiController.initPWA();
+  },
+
+  handleClassChange: () => {
+    localStorage.setItem('selectedClass', elements.classSelect.value);
+    uiController.updateSubjects();
+    uiController.handleSearch();
+  },
+
+  updateSubjects: () => {
+    const selectedClass = elements.classSelect.value;
+    const subjects = selectedClass === 'all' ? 
+      [...new Set(Object.values(dataByClass).flatMap(c => Object.keys(c)))] : 
+      Object.keys(dataByClass[selectedClass] || {});
+    
+    elements.subjectSelect.innerHTML = '<option value="">Semua Mata Kuliah</option>';
+    subjects.forEach(subject => {
+      elements.subjectSelect.innerHTML += `<option value="${subject}">${subject}</option>`;
+    });
+  },
+
+  handleSearch: () => {
+    const query = elements.nameInput.value.trim().toLowerCase();
+    const showCalendar = !query;
+    
+    // Toggle UI Elements
+    elements.calendarEl.style.display = showCalendar ? '' : 'none';
+    if(elements.printContainer) elements.printContainer.style.display = showCalendar ? '' : 'none';
+    
+    // Show Loading
+    const spinner = document.createElement('div');
+    spinner.className = 'loading-spinner';
+    elements.resultsDiv.innerHTML = '';
+    elements.resultsDiv.appendChild(spinner);
+
+    // Process Data
+    const filteredData = dataManager.getFilteredData(
+      elements.classSelect.value,
+      elements.subjectSelect.value,
+      query
+    );
+    
+    // Render Results
+    setTimeout(() => {
+      spinner.remove();
+      dataManager.renderResults(filteredData, query);
+    }, 300);
+  },
+
+  handleDriveSelect: function(event) {
+    const url = event.target.value;
+    if(url && url.startsWith('https://drive.google.com')) {
+      window.open(url, "_blank");
+    } else {
+      alert('Link Google Drive tidak valid!');
+    }
+    event.target.selectedIndex = 0;
+  },
+
+  closePopup: () => {
+    elements.popup.overlay.style.display = 'none';
+    elements.popup.container.style.display = 'none';
+  },
+
+  initPWA: () => {
     let deferredPrompt;
+    
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      console.log("App bisa dipasang!");
+      uiController.showInstallPrompt();
     });
-  }
-});
 
-function closePopup() {
-  document.getElementById('overlay').style.display = 'none';
-  document.getElementById('popup').style.display   = 'none';
-}
-
-// Update daftar mata kuliah di dropdown
-function updateSubjects() {
-  const sel = classSelect.value;
-  let subjects = [];
-
-  if (sel === 'all') {
-    const all = new Set();
-    Object.values(dataByClass)
-      .forEach(cd => Object.keys(cd).forEach(s => all.add(s)));
-    subjects = Array.from(all);
-  } else {
-    subjects = Object.keys(dataByClass[sel] || {});
-  }
-
-  // Reset dan isi ulang options
-  subjectSelect.innerHTML = '<option value="">Semua Mata Kuliah</option>';
-  const frag = document.createDocumentFragment();
-  subjects.forEach(s => {
-    const opt = document.createElement('option');
-    opt.value       = s;
-    opt.textContent = s;
-    frag.appendChild(opt);
-  });
-  subjectSelect.appendChild(frag);
-}
-
-// Tampilkan / filter hasil, dan sembunyikan kalender jika ada query
-function showResults() {
-  const nameQuery = nameInput.value.trim().toLowerCase();
-
-  // Hide / show kalender & tombol cetak
-  if (nameQuery) {
-    calendarEl.style.display      = 'none';
-    printContainer && (printContainer.style.display = 'none');
-  } else {
-    calendarEl.style.display      = '';
-    printContainer && (printContainer.style.display = '');
-  }
-
-  resultsDiv.innerHTML = '';
-  const today = new Date(); today.setHours(0,0,0,0);
-  const selClass   = classSelect.value;
-  const selSubj    = subjectSelect.value;
-  const classes    = selClass === 'all' ? Object.keys(dataByClass) : [selClass];
-  const matches    = [];
-
-  // Kumpulkan match
-  classes.forEach(cl => {
-    const subs = dataByClass[cl] || {};
-    for (const subject in subs) {
-      if (selSubj && subject !== selSubj) continue;
-      for (const date in subs[subject]) {
-        const eventDate = new Date(date); eventDate.setHours(0,0,0,0);
-        if (eventDate < today) continue;
-        const group = subs[subject][date];
-        const hasMatch = nameQuery
-          ? group.some(n => n.toLowerCase().includes(nameQuery))
-          : true;
-        if (hasMatch) {
-          matches.push({ class: cl, subject, date, group, query: nameQuery });
-        }
-      }
+    // Manual trigger untuk iOS
+    if(utils.detectIOS() && !utils.isStandalone()) {
+      setTimeout(uiController.showInstallPrompt, 3000);
     }
-  });
+  },
 
-  // Sort by date
-  matches.sort((a,b) => new Date(a.date) - new Date(b.date));
+  showInstallPrompt: () => {
+    if(utils.detectIOS()) {
+      elements.pwaPopup.querySelector('p').textContent = 
+        'Untuk menambahkan ke Layar Utama: tekan tombol "Bagikan" lalu pilih "Tambah ke Layar Utama".';
+      elements.pwaPopup.querySelector('#add-to-home').style.display = 'none';
+    } else {
+      elements.pwaPopup.querySelector('#add-to-home').style.display = 'inline-block';
+    }
+    elements.pwaPopup.style.display = 'flex';
+  },
 
-  // Render kartu
-  matches.forEach(m => {
-    const card = document.createElement('div');
-    card.className = 'result-card';
+  handlePWAInstall: async () => {
+    if(window.deferredPrompt) {
+      await window.deferredPrompt.prompt();
+      const { outcome } = await window.deferredPrompt.userChoice;
+      console.log(`User response: ${outcome}`);
+      window.deferredPrompt = null;
+    }
+    elements.pwaPopup.style.display = 'none';
+  }
+};
 
-    // Tanggal
-    const meta1 = document.createElement('div'); meta1.className = 'card-meta';
-    meta1.innerHTML = `<i class="fa-solid fa-calendar-day"></i>`;
-    const dateEl = document.createElement('span');
-    dateEl.className = 'card-date';
-    dateEl.textContent = formatTanggalIndo(m.date);
-    meta1.appendChild(dateEl);
-
-    // Mata Kuliah
-    const meta2 = document.createElement('div'); meta2.className = 'card-meta';
-    meta2.innerHTML = `<i class="fa-solid fa-book"></i><span>${m.subject}</span>`;
-
-    // Group
-    const groupDiv = document.createElement('div'); groupDiv.className = 'card-group';
-    groupDiv.innerHTML = `<i class="fa-solid fa-users"></i>` +
-      m.group.map(name =>
-        name.toLowerCase().includes(m.query)
-          ? `<span class="highlight">${name}</span>`
-          : name
-      ).join(', ');
-
-    // Kelas
-    const meta3 = document.createElement('div'); meta3.className = 'card-meta';
-    meta3.innerHTML = `<i class="fa-solid fa-chalkboard-user"></i><span>Kelas: ${m.class}</span>`;
-
-    [meta1, meta2, groupDiv, meta3].forEach(el => card.appendChild(el));
-    resultsDiv.appendChild(card);
-  });
-}
+// Initialize Application
+document.addEventListener('DOMContentLoaded', uiController.init);
