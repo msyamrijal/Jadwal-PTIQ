@@ -7,6 +7,10 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  
+  <!-- Manifest -->
+  <link rel="manifest" href="/manifest.json">
+
   <style>
     .drive-dropdown {
       background-color: #f0f4ff;
@@ -31,6 +35,53 @@
       display: flex;
       align-items: center;
       gap: 10px;
+    }
+
+    /* Popup untuk Add to Home */
+    #add-to-home-popup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 100;
+    }
+
+    .popup {
+      display: block;
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.75rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    #add-to-home {
+      background-color: var(--primary);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    #add-to-home:hover {
+      background-color: var(--secondary);
     }
   </style>
 </head>
@@ -91,6 +142,16 @@
       <button class="close-btn" onclick="closePopup()">&times;</button>
       <div id="popup-content"></div>
     </div>
+
+    <!-- Popup untuk Add to Home -->
+    <div id="add-to-home-popup">
+      <div class="popup">
+        <button class="close-btn" id="close-popup">&times;</button>
+        <h2>Tambahkan ke Layar Utama</h2>
+        <p>Untuk akses cepat, tambahkan situs ini ke layar utama Anda.</p>
+        <button id="add-to-home">Tambahkan ke Layar Utama</button>
+      </div>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
@@ -103,6 +164,42 @@
         this.selectedIndex = 0;
       }
     });
+
+    // Popup "Add to Home" hanya muncul pada perangkat mobile
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      setTimeout(function() {
+        const popup = document.getElementById('add-to-home-popup');
+        popup.style.display = 'block';
+      }, 1000);  // Tunda 1 detik setelah halaman dimuat
+
+      // Close popup ketika tombol close diklik
+      document.getElementById('close-popup').addEventListener('click', function() {
+        document.getElementById('add-to-home-popup').style.display = 'none';
+      });
+
+      // Tombol Tambah ke Layar Utama
+      document.getElementById('add-to-home').addEventListener('click', function() {
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+          alert("Situs sudah di layar utama!");
+        } else {
+          if (window.deferredPrompt) {
+            window.deferredPrompt.prompt();  // Memicu prompt "Add to Home Screen"
+            window.deferredPrompt.userChoice
+              .then(function(choiceResult) {
+                window.deferredPrompt = null;
+                console.log(choiceResult.outcome);
+              });
+          }
+        }
+      });
+
+      let deferredPrompt;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        console.log("App bisa dipasang!");
+      });
+    }
   </script>
 </body>
 </html>
