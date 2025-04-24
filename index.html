@@ -7,12 +7,49 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <style>
+    .drive-dropdown {
+      background-color: #f0f4ff;
+      color: #34568B;
+      border: 1px solid #c3dafe;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      margin-left: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all 0.2s ease;
+    }
+
+    .drive-dropdown:hover,
+    .drive-dropdown:focus {
+      background-color: #dbe7ff;
+      outline: none;
+    }
+
+    .drive-dropdown-container {
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <div class="hero">
       <img src="https://cdn-icons-png.flaticon.com/512/2232/2232688.png" class="illustration" alt="Study Illustration">
       <h1 class="title">Jadwal Pemakalah</h1>
+
+      <!-- Dropdown Google Drive -->
+      <div class="drive-dropdown-container">
+        <label for="driveDropdown" style="font-weight: bold; font-size: 1rem;">📁 Akses Folder Google Drive:</label>
+        <select id="driveDropdown" class="drive-dropdown">
+          <option value="">-- Pilih Kelas --</option>
+          <option value="https://drive.google.com/drive/folders/12_mT3WcsuFeYOYfvuQnKjFH1B1dVgNyZ?usp=drive_link">PKU B</option>
+          <option value="https://drive.google.com/drive/folders/1La24Y-0DOPq5iJUUVg-UaF8gWEIsIqHQ?usp=drive_link">PTIQ H</option>
+          <option value="https://drive.google.com/drive/folders/1xgSaH0ErVCeF8pw-4JmBBLSTKQyFm2eu?usp=drive_link">PKUP</option>
+        </select>
+      </div>
 
       <div class="controls">
         <div class="select-wrapper">
@@ -58,5 +95,14 @@
 
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
   <script src="script.js"></script>
+  <script>
+    document.getElementById("driveDropdown").addEventListener("change", function () {
+      const url = this.value;
+      if (url) {
+        window.open(url, "_blank");
+        this.selectedIndex = 0;
+      }
+    });
+  </script>
 </body>
 </html>
