@@ -289,35 +289,46 @@ document.addEventListener('DOMContentLoaded', () => {
   updateSubjects();
   showResults();
 
-  // Fitur popup "Add to Home Screen" di mobile
-  if (window.matchMedia('(max-width: 768px)').matches) {
-    setTimeout(function() {
-      const popup = document.getElementById('add-to-home-popup');
-      popup.style.display = 'block';
-    }, 1000);  // Tunda 1 detik setelah halaman dimuat
 
-    // Close popup ketika tombol close diklik
-    document.getElementById('close-popup').addEventListener('click', function() {
-      document.getElementById('add-to-home-popup').style.display = 'none';
+// Di dalam DOMContentLoaded event:
+// Hapus kode PWA yang ada dan ganti dengan ini:
+
+// Deteksi mobile device
+function isMobileDevice() {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+// Tampilkan popup setelah 5 detik
+if(isMobileDevice() && !localStorage.getItem('popupShown')) {
+  setTimeout(() => {
+    document.getElementById('add-to-home-popup').style.display = 'block';
+    localStorage.setItem('popupShown', 'true');
+  }, 5000);
+}
+
+// Handle tombol close
+document.getElementById('close-popup').addEventListener('click', () => {
+  document.getElementById('add-to-home-popup').style.display = 'none';
+});
+
+// Handle tombol install
+document.getElementById('add-to-home').addEventListener('click', () => {
+  if(window.matchMedia('(display-mode: standalone)').matches) {
+    alert("Aplikasi sudah terpasang di layar utama!");
+  } else if(window.deferredPrompt) {
+    window.deferredPrompt.prompt();
+    window.deferredPrompt.userChoice.then(() => {
+      window.deferredPrompt = null;
     });
+  } else {
+    alert("Tekan tombol menu di browser dan pilih 'Tambahkan ke Layar Utama'");
+  }
+  document.getElementById('add-to-home-popup').style.display = 'none';
+});
 
-    // Tombol Tambah ke Layar Utama
-    document.getElementById('add-to-home').addEventListener('click', function() {
-      if (window.matchMedia('(display-mode: standalone)').matches) {
-        alert("Situs sudah di layar utama!");
-      } else {
-        // Menambahkan aplikasi ke layar utama (untuk PWA)
-        if (window.deferredPrompt) {
-          window.deferredPrompt.prompt();  // Memicu prompt "Add to Home Screen"
-          window.deferredPrompt.userChoice
-            .then(function(choiceResult) {
-              window.deferredPrompt = null;
-              console.log(choiceResult.outcome);
-            });
-        }
-      }
-    });
 
+
+  
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
