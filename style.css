@@ -12,7 +12,6 @@
   --transition: all 0.3s ease;
 }
 
-/* Base Styles */
 * {
   margin: 0;
   padding: 0;
@@ -27,7 +26,7 @@ body {
   min-height: 100vh;
 }
 
-/* Utility Classes */
+/* Screen-reader only */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -40,18 +39,7 @@ body {
   border: 0;
 }
 
-.loading-spinner {
-  display: none;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid var(--primary);
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  animation: spin 1s linear infinite;
-  margin: 1rem auto;
-}
-
-/* Layout */
+/* Container */
 .container {
   width: 90%;
   max-width: 1200px;
@@ -59,7 +47,7 @@ body {
   padding: 2rem 0;
 }
 
-/* Hero Section */
+/* Hero */
 .hero {
   text-align: center;
   margin-bottom: 2rem;
@@ -81,7 +69,7 @@ body {
   margin-bottom: 1.5rem;
 }
 
-/* Form Controls */
+/* Controls */
 .controls {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -90,9 +78,39 @@ body {
   margin-bottom: 2rem;
 }
 
-.selector-container {
-  display: grid;
-  gap: 1rem;
+/* Google Drive Dropdown */
+.drive-dropdown-container {
+  margin-bottom: 1.5rem;
+}
+
+.drive-dropdown-container label {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text);
+  margin-right: 0.5rem;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.drive-dropdown {
+  background-color: var(--card-bg);
+  color: var(--text);
+  border: 2px solid #e2e8f0;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  width: 100%;
+  max-width: 300px;
+}
+
+.drive-dropdown:hover,
+.drive-dropdown:focus {
+  background-color: #eef2ff;
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.2);
 }
 
 .select-wrapper {
@@ -119,38 +137,10 @@ select, input[type="text"] {
   appearance: none;
 }
 
-select:focus, 
-input[type="text"]:focus {
+select:focus, input[type="text"]:focus {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(99,102,241,0.2);
-}
-
-/* Google Drive Section */
-.drive-dropdown-container {
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.drive-dropdown {
-  background-color: #f0f4ff;
-  color: #34568B;
-  border: 1px solid #c3dafe;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  transition: var(--transition);
-  width: 100%;
-  max-width: 300px;
-}
-
-.drive-dropdown:hover,
-.drive-dropdown:focus {
-  background-color: #dbe7ff;
-  outline: none;
 }
 
 /* Calendar */
@@ -161,7 +151,7 @@ input[type="text"]:focus {
   box-shadow: var(--shadow);
 }
 
-/* Results */
+/* Results Grid */
 .results {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -169,6 +159,7 @@ input[type="text"]:focus {
   margin-top: 2rem;
 }
 
+/* Card */
 .result-card {
   background: var(--card-bg);
   border-radius: var(--radius);
@@ -185,7 +176,7 @@ input[type="text"]:focus {
   box-shadow: 0 8px 16px rgba(99,102,241,0.1);
 }
 
-/* Card Elements */
+/* Card Meta */
 .card-meta {
   display: flex;
   align-items: center;
@@ -204,6 +195,7 @@ input[type="text"]:focus {
   color: var(--text);
 }
 
+/* Card Group */
 .card-group {
   padding: 0.75rem;
   background: rgba(99,102,241,0.05);
@@ -212,6 +204,7 @@ input[type="text"]:focus {
   color: var(--text);
 }
 
+/* Highlight */
 .highlight {
   background: rgba(99,102,241,0.15);
   color: var(--primary);
@@ -219,81 +212,43 @@ input[type="text"]:focus {
   border-radius: 4px;
 }
 
-/* Popups */
+/* Popup & Overlay */
 .overlay {
   display: none;
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   background: rgba(0,0,0,0.5);
-  z-index: 999;
+  z-index: 100;
 }
 
 .popup {
   display: none;
   position: fixed;
-  top: 50%;
-  left: 50%;
+  top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  background: var(--card-bg);
-  padding: 2rem;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  z-index: 1000;
-  max-width: 90%;
-  width: 500px;
-}
-
-.close-btn {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  background: transparent;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: var(--text-light);
-}
-
-/* PWA Install Prompt */
-.add-to-home-popup {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0,0,0,0.5);
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-
-.add-to-home-content {
   background: var(--card-bg);
   padding: 1.5rem;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  text-align: center;
   max-width: 90%;
-  position: relative;
+  width: 400px;
+  z-index: 101;
 }
 
-.add-to-home-content .add-btn {
-  padding: 0.75rem 1.25rem;
-  font-size: 1rem;
+.close-btn {
+  position: absolute;
+  top: 0.5rem; right: 0.75rem;
+  background: none;
   border: none;
-  border-radius: var(--radius);
-  background: var(--primary);
-  color: #fff;
+  font-size: 1.5rem;
+  color: var(--text-light);
   cursor: pointer;
   transition: var(--transition);
 }
 
-.add-to-home-content .add-btn:hover {
-  background: var(--secondary);
+.close-btn:hover {
+  color: var(--primary);
 }
 
 /* Animations */
@@ -302,42 +257,21 @@ input[type="text"]:focus {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Responsive Design */
+/* Responsive */
 @media (max-width: 768px) {
   .title {
     font-size: 2rem;
   }
-  
   .controls {
     grid-template-columns: 1fr;
-  }
-  
-  .drive-dropdown-container {
-    flex-direction: column;
-    align-items: start;
-  }
-  
-  .drive-dropdown {
-    max-width: 100%;
-  }
-  
-  .illustration {
-    width: 140px;
   }
 }
 
 @media (max-width: 480px) {
+  .illustration {
+    width: 140px;
+  }
   .title {
     font-size: 1.75rem;
-  }
-  
-  .popup {
-    width: 95%;
-    padding: 1.5rem;
   }
 }
